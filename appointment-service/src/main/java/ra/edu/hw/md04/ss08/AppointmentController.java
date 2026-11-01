@@ -17,9 +17,11 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<DoctorAvailabilityResponse> checkDoctorAvailability() {
-        DoctorAvailabilityResponse response = doctorAvailabilityService.checkOnCall();
-        return ResponseEntity.status(response.available() ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
-                .body(response);
+    public ResponseEntity<ApiResponse> checkDoctorAvailability() {
+        ApiResponse response = doctorAvailabilityService.checkOnCall();
+        if (response instanceof ApiResponseError) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 }
